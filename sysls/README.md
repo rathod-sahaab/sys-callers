@@ -1,13 +1,40 @@
-# CPP conan template
+# sysls
 
-A template repo to quickly start cpp projects using [conan package manager](https://conan.io) and CMake.
+`ls` like utility to list files and directories, part of [sys-callers](https://github.com/rathod-sahaab/sys-callers) apps.
 
-_Inspired by [ForgottenUmbrella's gist](https://gist.github.com/ForgottenUmbrella/0f32f6446b2948a3a5a99687b264910d)_
+Project setup using template [rathod-sahaab/cpp-conan-template](https://github.com/rathod-sahaab/cpp-conan-template).
+## Usage
 
-## Configure
+```sh
+path/to/sysls path/to/dir
+```
 
-1. Change project name in `CMakeList.txt`.
-2. Update dependencies in `conanfile.txt`.
+You can add to `$PATH` or install but don't (not yet atleast).
+
+```
+Usage: build/bin/sysls [OPTIONS] [path/to/file]
+
+Positionals:
+  path/to/file TEXT=. Path to directory to list contents of
+
+Options:
+  -h,--help Print this help message and exit
+  -c,--color=0 enable color
+```
+
+examples:
+
+```sh
+sysls
+```
+
+```sh
+sysls ..
+```
+
+```sh
+sysls ~ # home directory
+```
 
 ## Setup
 
@@ -23,11 +50,7 @@ or
 mkdir build && cd build
 conan install ..
 cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1 # generates compile_commands.json
-
-ln -s compile_commands.json ../compile_commands.json # link compile_commands.json to home dir
 ```
-
-**Note:** Omit `ln -s ...` for windows manually copy compile_commands (AFAIK ln is not supported on windows).
 
 ## Compile
 
@@ -50,4 +73,5 @@ cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=1
 
 ## Binary
 
-Binary/app can be found in `build/bin/` which will be same as your project name.
+Binary/app can be found in `build/bin/` which will be same as the project name `sysls`.
+
