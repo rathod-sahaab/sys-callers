@@ -12,6 +12,9 @@
 #include <unistd.h>
 
 #include <sys/dir.h>
+#include <vector>
+
+void list_dir(DIR *dir);
 
 int main(int argc, char **argv) {
 
@@ -36,15 +39,17 @@ int main(int argc, char **argv) {
       sysls::print_error("Unknown error occured while getting current dir");
       return 1;
     }
-    sysls::print_success(
-        fmt::format("Current directory is '{}'\n", current_dir));
+    sysls::print_success(fmt::format("Current directory is '{}'", current_dir));
   }
 
   {
     const char *path = cli_opts.dir.c_str();
     if (access(path, F_OK) != -1) {
+      // TODO: wrap dir within dir-manager to use RAII and ensure safety
       if (DIR *dir = opendir(path); dir != NULL) {
-        sysls::print_success(fmt::format("'{}' is a directory", path));
+        sysls::print_success(fmt::format("Path '{}' is a directory", path));
+        list_dir(dir);
+        closedir(dir);
       } else {
         sysls::print_error(
             fmt::format("Path '{}' doesn't point to a directory", path));
@@ -57,4 +62,35 @@ int main(int argc, char **argv) {
   }
 
   return 0;
+}
+
+void list_dir(DIR *dir) {
+  // WARNING: doesn't own dir don't close!
+
+  struct dirent *dir_entry;
+
+  std::vector<std::string> directories, files;
+
+  while ((dir_entry = readdir(dir)) != NULL) {
+    if (dir_entry->d_type == DT_DIR) {
+      directories.emplace_back(dir_entry->d_name);
+    } else {
+
+      files.emplace_back(dir_entry->d_name);
+    }
+  }
+
+  for (const auto &directory : directories) {
+    if (directory.front() != '.') {
+      // condition filters out current . , parent .. , and hidden files
+      // TODO: add_option to not filter out current and parent;
+      // TODO: add option to show hidden files
+      fmt::print(fmt::fg(fmt::color::yellow) | fmt::emphasis::bold, "{}/\n",
+                 directory);
+    }
+  }
+
+  for (const auto &file : files) {
+    fmt::print("{}\n", file);
+  }
 }
