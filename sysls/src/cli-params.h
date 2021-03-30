@@ -5,8 +5,8 @@
 
 namespace sysls {
 struct Options {
-  bool color = true;
-  std::string dir = ".";
+  bool color;
+  std::string dir;
 };
 } // namespace sysls
 

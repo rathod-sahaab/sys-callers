@@ -5,6 +5,7 @@
 #include "fmt/core.h"
 
 #include "cli-params.h"
+#include "utils.h"
 
 #include <cstdio>
 #include <dirent.h>
@@ -17,7 +18,11 @@ int main(int argc, char **argv) {
   sysls::Options cli_opts;
 
   CLI::App app{"sysls: minimal ls clone"};
-  app.add_flag("-c, --color", cli_opts.color, "enable color");
+  app.add_flag("-c, --color", cli_opts.color, "enable color")
+      ->default_val(false);
+  app.add_option("path/to/file", cli_opts.dir,
+                 "Path to directory to list contents of")
+      ->default_val(".");
 
   CLI11_PARSE(app, argc, argv);
 
@@ -28,13 +33,27 @@ int main(int argc, char **argv) {
     char *success = getcwd(current_dir, BUFFER_SIZE);
 
     if (not success) {
-      perror("getcwd");
-      fmt::print(fmt::fg(fmt::color::red),
-                 "ERROR: encountered an error while getting current dir\n");
+      sysls::print_error("Unknown error occured while getting current dir");
       return 1;
     }
-    fmt::print(fmt::fg(fmt::color::green), "SUCCESS: ");
-    fmt::print("Current directory is '{}'\n", current_dir);
+    sysls::print_success(
+        fmt::format("Current directory is '{}'\n", current_dir));
+  }
+
+  {
+    const char *path = cli_opts.dir.c_str();
+    if (access(path, F_OK) != -1) {
+      if (DIR *dir = opendir(path); dir != NULL) {
+        sysls::print_success(fmt::format("'{}' is a directory", path));
+      } else {
+        sysls::print_error(
+            fmt::format("Path '{}' doesn't point to a directory", path));
+      }
+    } else {
+      sysls::print_error(
+          fmt::format("Path '{}' doesn't exist! Aborting...", path));
+      return 2;
+    }
   }
 
   return 0;
