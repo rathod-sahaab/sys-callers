@@ -5,8 +5,9 @@ Want to learn _linux programming_? me too!
 This project implements many standard tools like:
 
 - [x] ls (sysls)
-- [ ] curl
+- [x] cat
 - [ ] cp
+- [ ] curl
 
 etc.
 
