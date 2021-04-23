@@ -2,10 +2,11 @@
 #define CLI_PARAMS_H
 
 #include <string>
+#include <vector>
 
 namespace syscat {
 struct Options {
-  std::string file_path;
+  std::vector<std::string> file_path;
 };
 } // namespace syscat
 
