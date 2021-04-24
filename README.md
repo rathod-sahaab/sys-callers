@@ -6,7 +6,7 @@ This project implements many standard tools like:
 
 - [x] ls (sysls)
 - [x] cat
-- [ ] cp
+- [x] cp
 - [ ] curl
 
 etc.
@@ -25,5 +25,10 @@ Minimal file lister (ls functionality)
 
 ### syscat
 
-Minimal cat clone (cat functionality)
+Minimal cat clone (concatenate functionality)
 ![syscat demo](./docs/screen-shots/syscat-demo.png)
+
+### syscp
+
+Minimal cp clone (copy files functionality)
+![syscat demo](./docs/screen-shots/syscp-demo.png)
